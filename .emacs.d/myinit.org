@@ -1,0 +1,68 @@
+#+STARTUP: overview hidestars indent align inlineimages
+
+* Settings
+  
+#+BEGIN_SRC emacs-lisp
+
+  ;; hide startup message
+  (setq inhibit-startup-message t)
+
+  ;;
+  (tool-bar-mode -1)
+
+  ;; enable line numbers globally
+  (global-linum-mode t)
+
+  ;; add .bin/local to PATH variable the current
+  ;; this is because I start emacs with
+  ;; env HOME=$HOME/somefolder
+
+  (defun joindirs (root &rest dirs)
+    "Joins a series of directories together,
+     like Python's os.path.join
+     (joindirs \"/a\" \"b\" \"c\") => /a/b/c"
+    (if (not dirs)
+        root
+      (apply 'joindirs
+             (expand-file-name (car dirs) root)
+             (cdr dirs))))
+
+  (setenv "PATH" (concat (getenv "PATH") ":"
+                         (joindirs (getenv "HOME") ".bin" "local")))
+
+#+END_SRC
+
+* Python settings
+
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package elpy
+      :ensure t
+      :config
+      (elpy-enable)
+      ;; (setq elpy-rpc-virtualenv-path 'current) ;; otherwise error
+      ;; do: sudo apt install virtualenv
+      ;;     sudo apt install python3-pip
+      (setq elpy-rpc-python-command "python3")
+      ;; otherwise error on M-x elpy-config
+      ;; 'Neither easy_install nor pip found
+      ;;  use ipython
+      (setq python-shell-interpreter "ipython"
+            python-shell-interpreter-args "-i --simple-prompt")
+      ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
+      (setenv "WORKON_HOME" "/home/josephus/miniconda3/envs")
+      )
+  #+END_SRC
+
+  - Automatic error indication
+
+  - run while cursor in Python buffer: C-c C-c
+    (it opens \*Python\* buffer)
+
+  - it supports via `pyvenv` package virtual environments
+    use existing virtual env         M-x pyvenv-workon <path-to-python-in-conda> RET
+    deactivate virtual env           M-x pyvenv-deactivate
+    
+  - config elpy:                     M-x elpy-config
+
+** 
