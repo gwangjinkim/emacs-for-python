@@ -33,3 +33,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+
+;; reset env HOME
+;; works only with ~/.bashrc
+;; alias pyemacs="conda activate emacs && env ORIG_HOME=$HOME HOME=$HOME/emacs/emacs-for-python emacs &"
+(setenv "HOME" (getenv "ORIG_HOME"))
