@@ -10,8 +10,10 @@
   ;;
   (tool-bar-mode -1)
 
-  ;; enable line numbers globally
-  (global-linum-mode t)
+  ;; ;; enable line numbers globally
+  ;; (global-linum-mode t)
+  (when (fboundp 'global-display-line-numbers-mode)
+    (global-display-line-numbers-mode 1))  
 
   ;; add .bin/local to PATH variable the current
   ;; this is because I start emacs with
@@ -50,7 +52,7 @@
       (setq python-shell-interpreter "ipython"
             python-shell-interpreter-args "-i --simple-prompt")
       ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
-      (setenv "WORKON_HOME" "/home/josephus/miniconda3/envs")
+      (setenv "WORKON_HOME" (expand-file-name "~/miniconda3/envs/"))
       )
   #+END_SRC
 
