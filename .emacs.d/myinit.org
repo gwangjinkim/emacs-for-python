@@ -21,8 +21,8 @@
 
   (defun joindirs (root &rest dirs)
     "Joins a series of directories together,
-     like Python's os.path.join
-     (joindirs \"/a\" \"b\" \"c\") => /a/b/c"
+       like Python's os.path.join
+       (joindirs \"/a\" \"b\" \"c\") => /a/b/c"
     (if (not dirs)
         root
       (apply 'joindirs
@@ -31,6 +31,28 @@
 
   (setenv "PATH" (concat (getenv "PATH") ":"
                          (joindirs (getenv "HOME") ".bin" "local")))
+
+  ;; get conda environment
+  (require 'json)
+
+  (defun get-conda-envs-dir ()
+    "Get the primary directory where Conda environments are stored."
+    (let* ((output (process-lines "conda" "info" "--json"))
+           (json-object-type 'hash-table)
+           (json-array-type 'list)
+           (json-key-type 'string)
+           (info (json-read-from-string (mapconcat 'identity output "\n")))
+           (envs-dirs (gethash "envs_dirs" info)))
+      (if envs-dirs
+          (car envs-dirs)
+        (error "Could not determine Conda environments directory"))))
+
+   ;; set conda env as workon
+  (defun set-conda-envs-dir-as-workon ()
+    "Set the Conda environments directory as the WORKON environment variable."
+    (let ((conda-envs-dir (get-conda-envs-dir)))
+      (setenv "WORKON_HOME" conda-envs-dir)
+      (message "WORKON_HOME set to %s" conda-envs-dir)))
 
 #+END_SRC
 
@@ -52,7 +74,7 @@
       (setq python-shell-interpreter "ipython"
             python-shell-interpreter-args "-i --simple-prompt")
       ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
-      (setenv "WORKON_HOME" (expand-file-name "$ORIG_HOME/miniconda3/envs/"))
+      (set-conda-envs-dir-as-workon)
       )
   #+END_SRC
 
