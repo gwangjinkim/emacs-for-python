@@ -52,7 +52,7 @@
       (setq python-shell-interpreter "ipython"
             python-shell-interpreter-args "-i --simple-prompt")
       ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
-      (setenv "WORKON_HOME" (expand-file-name "~/miniconda3/envs/"))
+      (setenv "WORKON_HOME" (expand-file-name "$ORIG_HOME/miniconda3/envs/"))
       )
   #+END_SRC
 
