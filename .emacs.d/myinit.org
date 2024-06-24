@@ -1,6 +1,7 @@
 #+STARTUP: overview hidestars indent align inlineimages
 
-* Settings
+*
+Settings
   
 #+BEGIN_SRC emacs-lisp
 
@@ -60,22 +61,31 @@
 
 
   #+BEGIN_SRC emacs-lisp
+
+    ;; manually add two dependencies
+
+    (use-package spinner
+      :ensure t)
+
+    (use-package compat
+      :ensure t)
+
     (use-package elpy
-      :ensure t
-      :config
-      (elpy-enable)
-      ;; (setq elpy-rpc-virtualenv-path 'current) ;; otherwise error
-      ;; do: sudo apt install virtualenv
-      ;;     sudo apt install python3-pip
-      (setq elpy-rpc-python-command "python3")
-      ;; otherwise error on M-x elpy-config
-      ;; 'Neither easy_install nor pip found
-      ;;  use ipython
-      (setq python-shell-interpreter "ipython"
-            python-shell-interpreter-args "-i --simple-prompt")
-      ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
-      (set-conda-envs-dir-as-workon)
-      )
+              :ensure t
+              :config
+              (elpy-enable)
+              ;; (setq elpy-rpc-virtualenv-path 'current) ;; otherwise error
+              ;; do: sudo apt install virtualenv
+              ;;     sudo apt install python3-pip
+              (setq elpy-rpc-python-command "python3")
+              ;; otherwise error on M-x elpy-config
+              ;; 'Neither easy_install nor pip found
+              ;;  use ipython
+              (setq python-shell-interpreter "ipython"
+                    python-shell-interpreter-args "-i --simple-prompt")
+              ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
+              (set-conda-envs-dir-as-workon)
+              )
   #+END_SRC
 
   - Automatic error indication
