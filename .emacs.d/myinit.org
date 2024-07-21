@@ -14,7 +14,14 @@ Settings
   ;; ;; enable line numbers globally
   ;; (global-linum-mode t)
   (when (fboundp 'global-display-line-numbers-mode)
-    (global-display-line-numbers-mode 1))  
+    (global-display-line-numbers-mode 1))
+
+  ;; nicer theme
+  (use-package sweet-theme
+    :ensure t
+    :init
+    (load-theme 'sweet t))
+
 
   ;; add .bin/local to PATH variable the current
   ;; this is because I start emacs with
@@ -71,21 +78,20 @@ Settings
       :ensure t)
 
     (use-package elpy
-              :ensure t
-              :config
-              (elpy-enable)
-              ;; (setq elpy-rpc-virtualenv-path 'current) ;; otherwise error
-              ;; do: sudo apt install virtualenv
-              ;;     sudo apt install python3-pip
-              (setq elpy-rpc-python-command "python3")
-              ;; otherwise error on M-x elpy-config
-              ;; 'Neither easy_install nor pip found
-              ;;  use ipython
-              (setq python-shell-interpreter "ipython"
-                    python-shell-interpreter-args "-i --simple-prompt")
-              ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
-              (set-conda-envs-dir-as-workon)
-              )
+      :ensure t
+      :config
+      (elpy-enable)
+      ;; (setq elpy-rpc-virtualenv-path 'current) ;; otherwise error
+      ;; do: sudo apt install virtualenv
+      ;;     sudo apt install python3-pip
+      (setq elpy-rpc-python-command "python3")
+      ;; otherwise error on M-x elpy-config
+      ;; 'Neither easy_install nor pip found
+      ;;  use ipython
+      (setq python-shell-interpreter "ipython"
+            python-shell-interpreter-args "-i --simple-prompt")
+      ;; to be able to use pyvenv-workon, one has to set $WORKON_HOME var
+      (set-conda-envs-dir-as-workon))
   #+END_SRC
 
   - Automatic error indication
@@ -99,4 +105,53 @@ Settings
     
   - config elpy:                     M-x elpy-config
 
-** 
+* Python Debugging
+
+#+begin_src emacs-lisp
+  (use-package dape
+    :preface
+    ;; By default dape shares the same keybinding prefix as `gud'
+    ;; If you do not want to use any prefix, set it to nil.
+    ;; (setq dape-key-prefix "\C-x\C-a")
+
+    :hook
+    ;; Save breakpoints on quit
+    ((kill-emacs . dape-breakpoint-save)
+     ;; Load breakpoints on startup
+     (after-init . dape-breakpoint-load))
+
+    :init
+    ;; To use window configuration like gud (gdb-mi)
+    ;; (setq dape-buffer-window-arrangement 'gud)
+
+    :config
+    ;; Info buffers to the right
+    (setq dape-buffer-window-arrangement 'right)
+
+    ;; Global bindings for setting breakpoints with mouse
+    (dape-breakpoint-global-mode)
+
+    ;; Pulse source line (performance hit)
+    ;; (add-hook 'dape-display-source-hook 'pulse-momentary-highlight-one-line)
+
+    ;; To not display info and/or buffers on startup
+    ;; (remove-hook 'dape-start-hook 'dape-info)
+    ;; (remove-hook 'dape-start-hook 'dape-repl)
+
+    ;; To display info and/or repl buffers on stopped
+    ;; (add-hook 'dape-stopped-hook 'dape-info)
+    ;; (add-hook 'dape-stopped-hook 'dape-repl)
+
+    ;; Kill compile buffer on build success
+    ;; (add-hook 'dape-compile-hook 'kill-buffer)
+
+    ;; Save buffers on startup, useful for interpreted languages
+    ;; (add-hook 'dape-start-hook (lambda () (save-some-buffers t t)))
+
+    ;; Projectile users
+    (setq dape-cwd-fn 'projectile-project-root)
+    )
+#+end_src
+
+#+RESULTS:
+| dape-breakpoint-load | package--save-selected-packages | org-persist-load-all | tramp-register-archive-autoload-file-name-handler | magit-maybe-define-global-key-bindings |
